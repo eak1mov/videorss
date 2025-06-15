@@ -1,0 +1,36 @@
+# https://yandex.cloud/ru/docs/monitoring/concepts/data-collection/unified-agent/services
+# https://yandex.cloud/ru/docs/monitoring/concepts/data-collection/unified-agent/inputs#metrics_pull_input
+
+status:
+  enabled: false
+  port: 16241
+
+routes:
+  - input:
+      plugin: metrics_pull
+      config:
+        url: http://localhost:8080/metrics
+        format:
+          prometheus: {}
+    channel:
+      channel_ref:
+        name: cloud_monitoring
+
+# for local tests:
+# channels:
+#   - name: cloud_monitoring
+#     channel:
+#       pipe:
+#         - storage_ref:
+#             name: main
+#       output:
+#         plugin: yc_metrics
+#         config:
+#           folder_id: "${YC_FOLDER_ID}"
+#           iam:
+#             jwt:
+#               file: "/secrets/myapp2-account-key.json"
+#         # plugin: debug
+#         # config:
+#         #   file_name: /dev/stdout
+#         #   delimiter: "\n===\n"

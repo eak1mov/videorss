@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Settings</title>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.2.0/crypto-js.js"
+        integrity="sha256-7gIlf/uvCptIHHA5sPO7IMNgyWdP5L6LOK5wmy6lm74=" crossorigin="anonymous"></script>
+</head>
+<body>
+    <textarea id="data" autocomplete="off" style="width: 100%;"></textarea><br/>
+    <form id="settings">
+        <input type="password" id="password" placeholder="Password"><br/>
+        <button type="submit">Update</button>
+    </form>
+    <script type="text/javascript">
+        document.getElementById('settings').addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            const saltResponse = await fetch('/settings/salt');
+            const salt = await saltResponse.text();
+
+            const data = document.getElementById('data');
+            const password = document.getElementById('password');
+
+            // crypto.subtle.digest is only available over https :(
+            const hashHex = CryptoJS.SHA256(salt + password.value + salt).toString();
+
+            const response = await fetch('/settings/update', {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({data: data.value, hash: hashHex, salt: salt}),
+            });
+
+            if (response.status == 200) {
+                data.value = await response.text();
+            } else {
+                alert(await response.text());
+            }
+        });
+    </script>
+</body>
+</html>

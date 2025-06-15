@@ -1,0 +1,109 @@
+services:
+  myapp_service:
+    container_name: myapp_container
+    image: cr.yandex/$YC_REGISTRY_ID/myapp_image:v05
+    restart: no
+    ports:
+      - "8080:8080"
+    networks:
+      - myapp_network
+    volumes:
+      - secrets_volume:/secrets
+    depends_on:
+      fluentbit_healthcheck_service:
+        condition: service_completed_successfully
+      secrets_service:
+        condition: service_completed_successfully
+    logging:
+      driver: fluentd
+      options:
+        fluentd-address: localhost:24224
+        tag: myapp_logging_tag
+    environment:
+      - VK_API_TOKEN_FILE=/secrets/VK_API_TOKEN
+      - AWS_ACCESS_KEY_ID_FILE=/secrets/AWS_ACCESS_KEY_ID
+      - AWS_SECRET_ACCESS_KEY_FILE=/secrets/AWS_SECRET_ACCESS_KEY
+      - SETTINGS_PASSWORD_FILE=/secrets/SETTINGS_PASSWORD
+      - S3_BUCKET=myapp2-bucket
+      - S3_OBJECT_KEY=myapp2-settings
+
+  nginx_service:
+    container_name: nginx_container
+    image: cr.yandex/$YC_REGISTRY_ID/nginx_image:v02
+    restart: no
+    ports:
+      - "80:80"
+    networks:
+      - myapp_network
+    depends_on:
+      - fluentbit_service
+      - myapp_service
+    logging:
+      driver: fluentd
+      options:
+        fluentd-address: localhost:24224
+        tag: nginx_logging_tag
+
+  secrets_service:
+    container_name: secrets_container
+    image: cr.yandex/$YC_REGISTRY_ID/secrets_image:v02
+    restart: no
+    network_mode: host
+    volumes:
+      - secrets_volume:/secrets
+    environment:
+      - YC_FOLDER_ID=$YC_FOLDER_ID
+      - YC_SECRET_ID=$YC_SECRET_ID
+      - SECRET_KEYS=VK_API_TOKEN AWS_ACCESS_KEY_ID AWS_SECRET_ACCESS_KEY SETTINGS_PASSWORD
+      - SECRETS_PATH=/secrets
+
+  fluentbit_service:
+    container_name: fluentbit_container
+    image: cr.yandex/$YC_REGISTRY_ID/fluentbit_image:v01
+    restart: no
+    ports:
+      - "2020:2020" # for fluentbit_healthcheck_service
+      - "24224:24224"
+      - "24224:24224/udp"
+    environment:
+      - YC_LOGGING_GROUP_ID=$YC_LOGGING_GROUP_ID
+
+  # fluentbit distroless image doesn't have anything for healthcheck :(
+  fluentbit_healthcheck_service:
+    container_name: fluentbit_healthcheck_container
+    image: cr.yandex/$YC_REGISTRY_ID/fluentbit_healthcheck_image:v02
+    restart: no
+    network_mode: service:fluentbit_service
+    depends_on:
+      - fluentbit_service
+
+  unified_agent_service:
+    container_name: unified_agent_container
+    image: cr.yandex/$YC_REGISTRY_ID/unified_agent_image:v04
+    restart: no
+    network_mode: host
+    volumes:
+      - type: bind
+        source: /proc
+        target: /ua_proc
+      - type: bind
+        source: /sys
+        target: /ua_sys
+    depends_on:
+      - myapp_service
+    environment:
+      - FOLDER_ID=$YC_FOLDER_ID
+      - PROC_DIRECTORY=/ua_proc
+      - SYS_DIRECTORY=/ua_sys
+
+networks:
+  myapp_network:
+    driver: bridge
+
+volumes:
+  secrets_volume:
+    driver: local
+    driver_opts:
+      type: none
+      device: /dev/shm
+      o: bind
