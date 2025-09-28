@@ -1,6 +1,7 @@
 package main
 
 import (
+	_ "embed"
 	"errors"
 	"net/http"
 
@@ -30,6 +31,9 @@ func vkHandlerEcho(c echo.Context, server *Server) error {
 
 	return c.Blob(http.StatusOK, "application/xml; charset=utf-8", data)
 }
+
+//go:embed settings.html
+var settingsHtml string
 
 func settingsSaltHandlerEcho(c echo.Context, server *Server) error {
 	return c.String(http.StatusOK, server.SettingsSalt())
@@ -97,13 +101,15 @@ func startServerEcho(server *Server) {
 		return vkHandlerEcho(c, server)
 	})
 
+	e.GET("/myapp_settings", func(c echo.Context) error {
+		return c.HTML(http.StatusOK, settingsHtml)
+	})
 	e.GET("/myapp_settings/salt", func(c echo.Context) error {
 		return settingsSaltHandlerEcho(c, server)
 	})
 	e.POST("/myapp_settings/update", func(c echo.Context) error {
 		return settingsUpdateHandlerEcho(c, server)
 	})
-	e.File("/myapp_settings", "/settings.html")
 
 	e.Logger.Fatal(e.Start(":8080"))
 }

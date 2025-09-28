@@ -203,8 +203,8 @@ export YC_REGISTRY_ID=`yc container registry get --folder-name myapp2-folder --n
 
 yc iam create-token | docker login --username iam --password-stdin cr.yandex
 
-docker build . -t cr.yandex/$YC_REGISTRY_ID/myapp_image:v05
-docker push cr.yandex/$YC_REGISTRY_ID/myapp_image:v05
+docker build . -t cr.yandex/$YC_REGISTRY_ID/myapp_image:v06
+docker push cr.yandex/$YC_REGISTRY_ID/myapp_image:v06
 
 docker build . -t cr.yandex/$YC_REGISTRY_ID/secrets_image:v02
 docker push cr.yandex/$YC_REGISTRY_ID/secrets_image:v02
