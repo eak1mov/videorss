@@ -1,7 +1,7 @@
 services:
   myapp_service:
     container_name: myapp_container
-    image: cr.yandex/$YC_REGISTRY_ID/myapp_image:v06
+    image: cr.yandex/$YC_REGISTRY_ID/myapp_image:v07
     restart: no
     ports:
       - "8080:8080"

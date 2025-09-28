@@ -243,6 +243,7 @@ func main() {
 	// do not use rate limiter from the library,
 	// we already have Throttler with classic token bucket algorithm
 	vk.Limit = 0
+	vk.MethodURL = "https://api.vk.ru/method/"
 
 	cache := NewCache[*wallResponse](maxGroupCount, time.Hour)
 
