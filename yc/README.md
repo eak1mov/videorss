@@ -188,14 +188,14 @@ export YC_REGISTRY_ID=`yc container registry get --folder-name myapp2-folder --n
 
 yc iam create-token | docker login --username iam --password-stdin cr.yandex
 
-docker build . -t cr.yandex/$YC_REGISTRY_ID/myapp_image:v07
-docker push cr.yandex/$YC_REGISTRY_ID/myapp_image:v07
+docker build . -t cr.yandex/$YC_REGISTRY_ID/myapp_image:v08
+docker push cr.yandex/$YC_REGISTRY_ID/myapp_image:v08
 
 docker build . -t cr.yandex/$YC_REGISTRY_ID/secrets_image:v02
 docker push cr.yandex/$YC_REGISTRY_ID/secrets_image:v02
 
-docker build . -t cr.yandex/$YC_REGISTRY_ID/fluentbit_image:v01
-docker push cr.yandex/$YC_REGISTRY_ID/fluentbit_image:v01
+docker build . -t cr.yandex/$YC_REGISTRY_ID/fluentbit_image:v02
+docker push cr.yandex/$YC_REGISTRY_ID/fluentbit_image:v02
 
 ```
 
@@ -227,7 +227,7 @@ echo $YC_SECURITY_GROUP_ID
 
 yc compute instance create \
   --folder-name myapp2-folder \
-  --name myapp6-vm \
+  --name myapp4-vm \
   --zone=ru-central1-a \
   --metadata-from-file docker-compose=compose.yaml \
   --ssh-key ~/.ssh/id_myapp2.pub \
@@ -240,6 +240,11 @@ yc compute instance create \
   --maintenance-policy restart \
   --service-account-name myapp2-account
 
+yc compute instance update-container \
+  --folder-name myapp2-folder \
+  --name myapp4-vm \
+  --docker-compose-file compose.yaml
+
 ```
 
 
@@ -247,7 +252,7 @@ yc compute instance create \
 ```
 # https://yandex.cloud/ru/docs/compute/cli-ref/ssh/
 
-yc compute ssh --folder-name myapp2-folder --name myapp6-vm --identity-file ~/.ssh/id_myapp2 --login yc-user
+yc compute ssh --folder-name myapp2-folder --name myapp4-vm --identity-file ~/.ssh/id_myapp2 --login yc-user
 
 docker build --tag myapp20 .
 

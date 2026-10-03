@@ -1,7 +1,7 @@
 services:
   myapp_service:
     container_name: myapp_container
-    image: cr.yandex/$YC_REGISTRY_ID/myapp_image:v07
+    image: cr.yandex/$YC_REGISTRY_ID/myapp_image:v08
     restart: no
     ports:
       - "80:8080"
@@ -40,7 +40,7 @@ services:
 
   fluentbit_service:
     container_name: fluentbit_container
-    image: cr.yandex/$YC_REGISTRY_ID/fluentbit_image:v01
+    image: cr.yandex/$YC_REGISTRY_ID/fluentbit_image:v02
     restart: no
     ports:
       - "24224:24224"
