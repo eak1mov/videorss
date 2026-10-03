@@ -8,8 +8,8 @@ services:
     volumes:
       - secrets_volume:/secrets
     depends_on:
-      fluentbit_healthcheck_service:
-        condition: service_completed_successfully
+      fluentbit_service:
+        condition: service_healthy
       secrets_service:
         condition: service_completed_successfully
     logging:
@@ -43,20 +43,15 @@ services:
     image: cr.yandex/$YC_REGISTRY_ID/fluentbit_image:v01
     restart: no
     ports:
-      - "2020:2020" # for fluentbit_healthcheck_service
       - "24224:24224"
       - "24224:24224/udp"
+    healthcheck:
+      test: ["CMD", "/bin/busybox", "wget", "-q", "-O", "/dev/null", "http://127.0.0.1:2020/api/v1/health"]
+      timeout: 2s
+      interval: 5s
+      retries: 6
     environment:
       - YC_LOGGING_GROUP_ID=$YC_LOGGING_GROUP_ID
-
-  # fluentbit distroless image doesn't have anything for healthcheck :(
-  fluentbit_healthcheck_service:
-    container_name: fluentbit_healthcheck_container
-    image: cr.yandex/$YC_REGISTRY_ID/fluentbit_healthcheck_image:v02
-    restart: no
-    network_mode: service:fluentbit_service
-    depends_on:
-      - fluentbit_service
 
 volumes:
   secrets_volume:

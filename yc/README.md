@@ -194,9 +194,6 @@ docker push cr.yandex/$YC_REGISTRY_ID/myapp_image:v07
 docker build . -t cr.yandex/$YC_REGISTRY_ID/secrets_image:v02
 docker push cr.yandex/$YC_REGISTRY_ID/secrets_image:v02
 
-docker build . -t cr.yandex/$YC_REGISTRY_ID/fluentbit_healthcheck_image:v02
-docker push cr.yandex/$YC_REGISTRY_ID/fluentbit_healthcheck_image:v02
-
 docker build . -t cr.yandex/$YC_REGISTRY_ID/fluentbit_image:v01
 docker push cr.yandex/$YC_REGISTRY_ID/fluentbit_image:v01
 
