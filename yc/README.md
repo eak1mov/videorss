@@ -200,9 +200,6 @@ docker push cr.yandex/$YC_REGISTRY_ID/fluentbit_healthcheck_image:v02
 docker build . -t cr.yandex/$YC_REGISTRY_ID/fluentbit_image:v01
 docker push cr.yandex/$YC_REGISTRY_ID/fluentbit_image:v01
 
-docker build . -t cr.yandex/$YC_REGISTRY_ID/nginx_image:v02
-docker push cr.yandex/$YC_REGISTRY_ID/nginx_image:v02
-
 ```
 
 

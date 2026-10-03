@@ -82,10 +82,12 @@ func startServerEcho(server *Server) {
 	e.HideBanner = true
 	e.HidePort = true
 	e.HTTPErrorHandler = errorHandlerEcho
+	e.IPExtractor = echo.ExtractIPDirect()
 
 	e.Use(middleware.Logger())
 	e.Use(middleware.Recover())
-	e.Use(middleware.RateLimiter(middleware.NewRateLimiterMemoryStore(3))) // 3 RPS per ctx.RealIP
+	e.Use(middleware.Gzip())
+	e.Use(middleware.RateLimiter(middleware.NewRateLimiterMemoryStore(3))) // 3 RPS per IP
 
 	e.GET("/vk/:group", func(c echo.Context) error {
 		return vkHandlerEcho(c, server)
