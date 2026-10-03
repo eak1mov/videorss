@@ -15,7 +15,7 @@
         document.getElementById('settings').addEventListener('submit', async (e) => {
             e.preventDefault();
 
-            const saltResponse = await fetch('/settings/salt');
+            const saltResponse = await fetch('/myapp_settings/salt');
             const salt = await saltResponse.text();
 
             const data = document.getElementById('data');
@@ -24,7 +24,7 @@
             // crypto.subtle.digest is only available over https :(
             const hashHex = CryptoJS.SHA256(salt + password.value + salt).toString();
 
-            const response = await fetch('/settings/update', {
+            const response = await fetch('/myapp_settings/update', {
                 method: 'POST',
                 headers: {'Content-Type': 'application/json'},
                 body: JSON.stringify({data: data.value, hash: hashHex, salt: salt}),
