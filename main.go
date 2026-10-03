@@ -58,7 +58,7 @@ func createAtomEntry(group object.GroupsGroup, video object.VideoVideo) *atom.En
 
 	description := video.Description
 	description = html.EscapeString(description)
-	description = strings.Replace(description, "\n", "<br>", -1)
+	description = strings.ReplaceAll(description, "\n", "<br>")
 	content += description + "<br>\n"
 
 	return &atom.Entry{
@@ -243,7 +243,6 @@ func main() {
 	// do not use rate limiter from the library,
 	// we already have Throttler with classic token bucket algorithm
 	vk.Limit = 0
-	vk.MethodURL = "https://api.vk.ru/method/"
 
 	cache := NewCache[*wallResponse](maxGroupCount, time.Hour)
 

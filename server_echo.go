@@ -70,8 +70,7 @@ func errorHandlerEcho(err error, c echo.Context) {
 	if c.Response().Committed {
 		return
 	}
-	var httpError *echo.HTTPError
-	if errors.As(err, &httpError) {
+	if httpError, ok := errors.AsType[*echo.HTTPError](err); ok {
 		c.NoContent(httpError.Code)
 	} else {
 		c.NoContent(http.StatusInternalServerError)

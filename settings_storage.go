@@ -99,8 +99,7 @@ func NewS3Storage(s3AccessKey, s3Secret, s3Bucket, s3ObjectKey string) SettingsS
 	})
 
 	if err != nil {
-		var errNoSuchKey *types.NoSuchKey
-		if errors.As(err, &errNoSuchKey) {
+		if _, ok := errors.AsType[*types.NoSuchKey](err); ok {
 			return &s3Storage{
 				value:       "",
 				client:      client,

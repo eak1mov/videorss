@@ -12,7 +12,7 @@ import (
 //   -H "Content-Type: application/x-www-form-encoded" \
 //   -H "Authorization: Bearer ${VK_API_TOKEN}" \
 //   -o "data/${GROUP_DOMAIN}.json" \
-//   "https://api.vk.com/method/wall.get?v=5.199&domain=${GROUP_DOMAIN}&count=100&extended=1"
+//   "https://api.vk.ru/method/wall.get?v=5.199&domain=${GROUP_DOMAIN}&count=100&extended=1"
 
 func NewVkMock() http.RoundTripper {
 	return &vkMock{}
@@ -22,7 +22,7 @@ type vkMock struct {
 }
 
 func (c *vkMock) RoundTrip(req *http.Request) (*http.Response, error) {
-	if req.URL.String() != "https://api.vk.com/method/wall.get" {
+	if req.URL.Path != "/method/wall.get" {
 		return nil, fmt.Errorf("VkMock: invalid url %s", req.URL.String())
 	}
 
