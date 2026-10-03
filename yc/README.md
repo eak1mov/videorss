@@ -53,21 +53,6 @@ export YC_LOGGING_GROUP_ID=`yc logging group get --folder-name myapp2-folder --n
 ```
 
 
-## monitoring
-```
-# https://yandex.cloud/ru/docs/monitoring/security/
-# https://yandex.cloud/ru/docs/iam/operations/sa/assign-role-for-sa
-# https://yandex.cloud/ru/docs/resource-manager/cli-ref/folder/add-access-binding
-
-yc resource-manager folder add-access-binding \
-  --folder-name myapp2-folder \
-  --name myapp2-folder \
-  --role monitoring.editor \
-  --service-account-name myapp2-account
-
-```
-
-
 ## storage
 ```
 # https://yandex.cloud/ru/docs/storage/operations/buckets/create
@@ -214,9 +199,6 @@ docker push cr.yandex/$YC_REGISTRY_ID/fluentbit_healthcheck_image:v02
 
 docker build . -t cr.yandex/$YC_REGISTRY_ID/fluentbit_image:v01
 docker push cr.yandex/$YC_REGISTRY_ID/fluentbit_image:v01
-
-docker build . -t cr.yandex/$YC_REGISTRY_ID/unified_agent_image:v03
-docker push cr.yandex/$YC_REGISTRY_ID/unified_agent_image:v03
 
 docker build . -t cr.yandex/$YC_REGISTRY_ID/nginx_image:v02
 docker push cr.yandex/$YC_REGISTRY_ID/nginx_image:v02

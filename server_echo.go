@@ -5,7 +5,6 @@ import (
 	"errors"
 	"net/http"
 
-	"github.com/labstack/echo-contrib/echoprometheus"
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
 )
@@ -84,17 +83,9 @@ func startServerEcho(server *Server) {
 	e.HidePort = true
 	e.HTTPErrorHandler = errorHandlerEcho
 
-	metricsSkipper := func(c echo.Context) bool { return c.Path() == "/metrics" }
-	e.Use(middleware.LoggerWithConfig(middleware.LoggerConfig{Skipper: metricsSkipper}))
+	e.Use(middleware.Logger())
 	e.Use(middleware.Recover())
 	e.Use(middleware.RateLimiter(middleware.NewRateLimiterMemoryStore(3))) // 3 RPS per ctx.RealIP
-
-	e.Use(echoprometheus.NewMiddlewareWithConfig(echoprometheus.MiddlewareConfig{
-		Subsystem: "myapp",
-		Skipper:   metricsSkipper,
-	}))
-
-	e.GET("/metrics", echoprometheus.NewHandler())
 
 	e.GET("/vk/:group", func(c echo.Context) error {
 		return vkHandlerEcho(c, server)

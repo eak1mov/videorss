@@ -8,7 +8,6 @@ Technical features:
 - Rate-limiter for users.
 - Throttler for API.
 - Cloud logging.
-- Prometheus metrics for cloud monitoring.
 - Integration with cloud secrets.
 
 Product features:
